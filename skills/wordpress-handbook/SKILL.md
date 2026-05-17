@@ -1,6 +1,7 @@
 ---
 name: wordpress-handbook
 description: Search WordPress official handbooks for development guidelines, coding standards, and best practices. Use when users ask about WordPress plugin development, theme development, REST API usage, block editor (Gutenberg), coding standards, or advanced administration. Triggers on questions like "How do I create a custom post type?", "What are WordPress coding standards?", "How does the block editor work?", or any WordPress development concept questions.
+license: Apache-2.0
 ---
 
 # WordPress Handbook Search
