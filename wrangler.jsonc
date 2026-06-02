@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wordpress-skills",
+  // Set to the date the project was set up; bump when you want newer runtime semantics.
+  "compatibility_date": "2026-06-02",
+  // Static-assets-only Worker: Astro is pre-rendered, so there is no `main` Worker
+  // script. Wrangler serves the pre-built `site/dist` output directly.
+  "assets": {
+    "directory": "./site/dist"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

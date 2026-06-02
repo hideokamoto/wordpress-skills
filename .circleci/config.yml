@@ -1,0 +1,112 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2.1
+  gh: circleci/github-cli@2.3.0
+
+jobs:
+  test:
+    executor:
+      name: node/default
+      tag: "22.14"
+      resource_class: small
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: pnpm
+      - run:
+          name: Typecheck
+          command: pnpm run typecheck
+      - run:
+          name: Test
+          command: pnpm run test
+      - store_test_results:
+          path: reports
+          when: always
+
+  deploy-production:
+    executor:
+      name: node/default
+      tag: "22.14"
+      resource_class: small
+    environment:
+      DEPLOY_ENVIRONMENT_NAME: production
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: pnpm
+      - run:
+          name: Set deploy marker name
+          command: |
+            # Override DEPLOY_COMPONENT_NAME via CircleCI Project/Context env var if needed.
+            echo "export DEPLOY_COMPONENT_NAME=\"${DEPLOY_COMPONENT_NAME:-$CIRCLE_PROJECT_REPONAME}\"" >> "$BASH_ENV"
+            echo "export DEPLOY_NAME=\"${DEPLOY_COMPONENT_NAME:-$CIRCLE_PROJECT_REPONAME}-${CIRCLE_WORKFLOW_ID}\"" >> "$BASH_ENV"
+      - run:
+          name: Plan deployment (deploy marker)
+          command: |
+            circleci run release plan "$DEPLOY_NAME" \
+              --environment-name="$DEPLOY_ENVIRONMENT_NAME" \
+              --component-name="$DEPLOY_COMPONENT_NAME" \
+              --target-version="$CIRCLE_SHA1"
+      - run:
+          name: Update deploy marker to RUNNING
+          command: circleci run release update "$DEPLOY_NAME" --status=RUNNING
+      - run:
+          name: Deploy to Cloudflare Workers
+          command: pnpm run deploy
+      - gh/setup
+      - run:
+          name: Push git tag on success
+          command: |
+            TAG="$(date +%Y.%m.%d)-${CIRCLE_SHA1:0:7}"
+            if git ls-remote --tags origin "$TAG" | grep -q "$TAG"; then
+              echo "Tag $TAG already exists on remote, skipping."
+            else
+              git tag "$TAG"
+              git push origin "$TAG"
+            fi
+          when: on_success
+      - run:
+          name: Update deploy marker to SUCCESS
+          command: circleci run release update "$DEPLOY_NAME" --status=SUCCESS
+          when: on_success
+      - run:
+          name: Update deploy marker to FAILED
+          command: |
+            circleci run release update "$DEPLOY_NAME" \
+              --status=FAILED \
+              --failure-reason="${FAILURE_REASON:-Deployment failed}"
+          when: on_fail
+
+  cancel-deploy:
+    resource_class: small
+    docker:
+      - image: cimg/base:current
+    steps:
+      - run:
+          name: Update deploy marker to CANCELED
+          command: |
+            DEPLOY_COMPONENT_NAME="${DEPLOY_COMPONENT_NAME:-$CIRCLE_PROJECT_REPONAME}"
+            DEPLOY_NAME="${DEPLOY_COMPONENT_NAME}-${CIRCLE_WORKFLOW_ID}"
+            circleci run release update "$DEPLOY_NAME" --status=CANCELED
+
+workflows:
+  build-deploy:
+    jobs:
+      - test
+      - deploy-production:
+          context:
+            - cloudflare
+            - github
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
+      - cancel-deploy:
+          requires:
+            - deploy-production:
+                - canceled
+          filters:
+            branches:
+              only: main

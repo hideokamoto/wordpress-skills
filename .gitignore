@@ -13,3 +13,16 @@ Thumbs.db
 # エディタ
 .vscode/
 .idea/
+
+# Node / pnpm
+node_modules/
+
+# Astro build output
+site/dist/
+site/.astro/
+
+# Cloudflare Wrangler
+.wrangler/
+
+# Test results (CircleCI store_test_results)
+reports/
