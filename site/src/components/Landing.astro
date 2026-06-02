@@ -1,0 +1,218 @@
+---
+import '../styles/global.css';
+import { content, GITHUB_URL, type Lang } from '../i18n/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = content[lang];
+const installAnchor = '#install';
+---
+
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{t.metaTitle}</title>
+    <meta name="description" content={t.metaDescription} />
+    <meta property="og:title" content={t.metaTitle} />
+    <meta property="og:description" content={t.metaDescription} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" hreflang="en" href={new URL('/', Astro.site)} />
+    <link rel="alternate" hreflang="ja" href={new URL('/ja/', Astro.site)} />
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-200 antialiased selection:bg-violet-500/30">
+    <!-- Header -->
+    <header class="sticky top-0 z-20 border-b border-white/5 bg-slate-950/80 backdrop-blur">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
+        <a href={lang === 'ja' ? '/ja/' : '/'} class="font-semibold tracking-tight text-white">
+          wordpress-skills
+        </a>
+        <nav class="flex items-center gap-4 text-sm text-slate-400">
+          <a href="#why" class="hidden hover:text-white sm:inline">{t.nav.why}</a>
+          <a href={installAnchor} class="hidden hover:text-white sm:inline">{t.nav.install}</a>
+          <a href="#demo" class="hidden hover:text-white sm:inline">{t.nav.demo}</a>
+          <a href={t.langSwitchHref} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
+            {t.langSwitchLabel}
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-5">
+      <!-- Hero -->
+      <section class="relative py-20 sm:py-28">
+        <div
+          class="pointer-events-none absolute inset-x-0 -top-10 -z-10 mx-auto h-72 max-w-3xl rounded-full bg-violet-600/20 blur-3xl"
+        >
+        </div>
+        <p class="mb-4 inline-block rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
+          {t.hero.eyebrow}
+        </p>
+        <h1 class="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
+          {t.hero.title}<br />
+          <span class="bg-gradient-to-r from-violet-400 to-sky-400 bg-clip-text text-transparent">
+            {t.hero.highlight}
+          </span>
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-slate-300">
+          {t.hero.subtitle}
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            href={installAnchor}
+            class="rounded-lg bg-violet-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 transition hover:bg-violet-400"
+          >
+            {t.hero.ctaInstall}
+          </a>
+          <a
+            href={GITHUB_URL}
+            class="rounded-lg border border-white/15 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/5"
+          >
+            {t.hero.ctaGithub}
+          </a>
+        </div>
+        <p class="mt-5 text-sm text-slate-500">{t.hero.portability}</p>
+      </section>
+
+      <!-- Why -->
+      <section id="why" class="scroll-mt-20 border-t border-white/5 py-16">
+        <h2 class="text-2xl font-bold text-white">{t.why.title}</h2>
+        <p class="mt-4 max-w-3xl leading-relaxed text-slate-300">{t.why.body}</p>
+        <div class="mt-8 overflow-x-auto">
+          <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
+            <thead>
+              <tr class="border-b border-white/10 text-slate-400">
+                {t.why.tableHead.map((h) => <th class="px-3 py-2 font-medium">{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {
+                t.why.rows.map((row) => (
+                  <tr class="border-b border-white/5">
+                    <td class="px-3 py-3 font-medium text-slate-400">{row[0]}</td>
+                    <td class="px-3 py-3 text-slate-400">{row[1]}</td>
+                    <td class="px-3 py-3 font-medium text-violet-300">{row[2]}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section class="border-t border-white/5 py-16">
+        <h2 class="text-2xl font-bold text-white">{t.skills.title}</h2>
+        <div class="mt-6 rounded-xl border border-white/10 bg-white/[0.02] p-6">
+          <code class="text-lg font-semibold text-sky-300">{t.skills.name}</code>
+          <p class="mt-3 max-w-2xl text-slate-300">{t.skills.desc}</p>
+          <p class="mt-5 text-xs uppercase tracking-wide text-slate-500">{t.skills.handbooksLabel}</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {
+              t.skills.handbooks.map((h) => (
+                <span class="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300">
+                  {h}
+                </span>
+              ))
+            }
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-slate-400">{t.skills.more}</p>
+      </section>
+
+      <!-- Install -->
+      <section id="install" class="scroll-mt-20 border-t border-white/5 py-16">
+        <h2 class="text-2xl font-bold text-white">{t.install.title}</h2>
+        <div class="mt-6 space-y-5">
+          <div>
+            <p class="mb-2 text-sm font-medium text-slate-400">{t.install.ghLabel}</p>
+            <div class="group relative">
+              <pre class="overflow-x-auto rounded-lg border border-white/10 bg-black/40 p-4 text-sm text-slate-200"><code data-copy>{t.install.gh}</code></pre>
+              <button
+                class="copy-btn absolute right-2 top-2 rounded-md border border-white/10 bg-slate-800 px-2 py-1 text-xs text-slate-300 transition hover:bg-slate-700"
+                data-label={t.install.copy}
+                data-copied={t.install.copied}
+              >
+                {t.install.copy}
+              </button>
+            </div>
+          </div>
+          <div>
+            <p class="mb-2 text-sm font-medium text-slate-400">{t.install.npxLabel}</p>
+            <div class="group relative">
+              <pre class="overflow-x-auto rounded-lg border border-white/10 bg-black/40 p-4 text-sm text-slate-200"><code data-copy>{t.install.npx}</code></pre>
+              <button
+                class="copy-btn absolute right-2 top-2 rounded-md border border-white/10 bg-slate-800 px-2 py-1 text-xs text-slate-300 transition hover:bg-slate-700"
+                data-label={t.install.copy}
+                data-copied={t.install.copied}
+              >
+                {t.install.copy}
+              </button>
+            </div>
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">{t.install.note}</p>
+      </section>
+
+      <!-- Demo -->
+      <section id="demo" class="scroll-mt-20 border-t border-white/5 py-16">
+        <h2 class="text-2xl font-bold text-white">{t.demo.title}</h2>
+        <div class="mt-6 space-y-3">
+          <div class="rounded-lg border border-white/10 bg-white/[0.02] p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{t.demo.you}</p>
+            <p class="mt-1 text-slate-200">{t.demo.youText}</p>
+          </div>
+          <div class="rounded-lg border border-violet-400/20 bg-violet-500/5 p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-violet-300">{t.demo.agent}</p>
+            <p class="mt-1 text-slate-300">{t.demo.agentText}</p>
+          </div>
+          <p class="pt-2 text-sm text-slate-500">{t.demo.placeholder}</p>
+        </div>
+      </section>
+
+      <!-- Requirements -->
+      <section class="border-t border-white/5 py-16">
+        <h2 class="text-2xl font-bold text-white">{t.req.title}</h2>
+        <ul class="mt-4 list-inside list-disc space-y-1 text-slate-300">
+          {t.req.items.map((i) => <li>{i}</li>)}
+        </ul>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-10">
+      <div class="mx-auto flex max-w-5xl flex-col gap-3 px-5 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <p>{t.footer.tagline}</p>
+        <div class="flex gap-4">
+          <a href={GITHUB_URL} class="hover:text-white">GitHub</a>
+          <a href="https://agentskills.io" class="hover:text-white">{t.footer.standard}</a>
+          <span>{t.footer.license}</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const code = btn.parentElement?.querySelector<HTMLElement>('[data-copy]');
+          if (!code?.textContent) return;
+          try {
+            await navigator.clipboard.writeText(code.textContent.trim());
+            const copied = btn.dataset.copied ?? 'Copied!';
+            const label = btn.dataset.label ?? 'Copy';
+            btn.textContent = copied;
+            setTimeout(() => (btn.textContent = label), 1500);
+          } catch {
+            /* clipboard unavailable */
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
