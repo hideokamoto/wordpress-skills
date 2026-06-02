@@ -159,7 +159,7 @@ export const content: Record<Lang, Content> = {
         'WordPress/agent-skills のような公式スキルはコード生成に強い一方、生成は学習データに依存し、情報が古くなったり存在しない API を作り出すことがあります。wordpress-skills は該当ハンドブックを実行時に取得し、最新・公式の情報をエージェントの手元に置きます。併用がおすすめです。',
       tableHead: ['', '「生成」系スキル', 'wordpress-skills（グラウンディング）'],
       rows: [
-        ['正の源泉', 'モデルの学習データ', 'ライブの developer.wordpress.org'],
+        ['情報源', 'モデルの学習データ', 'ライブの developer.wordpress.org'],
         ['得意なこと', 'コードの足場づくり', 'API・規約・挙動の検証'],
         ['関係性', '—', '補完する — 併用がおすすめ'],
       ],
