@@ -41,9 +41,28 @@ const installAnchor = '#install';
           <a href={t.langSwitchHref} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
             {t.langSwitchLabel}
           </a>
+          <button
+            id="mobile-menu-btn"
+            class="rounded-md border border-white/10 p-1.5 hover:bg-white/5 sm:hidden"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            aria-label="Toggle navigation menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </button>
         </nav>
       </div>
     </header>
+    <div id="mobile-menu" class="hidden border-b border-white/5 bg-slate-950 sm:hidden">
+      <nav class="mx-auto flex max-w-5xl flex-col px-5 py-2 text-sm text-slate-400">
+        <a href="#why" class="py-2 hover:text-white">{t.nav.why}</a>
+        <a href={installAnchor} class="py-2 hover:text-white">{t.nav.install}</a>
+        <a href="#demo" class="py-2 hover:text-white">{t.nav.demo}</a>
+        <a href={t.langSwitchHref} class="py-2 hover:text-white">{t.langSwitchLabel}</a>
+      </nav>
+    </div>
 
     <main class="mx-auto max-w-5xl px-5">
       <!-- Hero -->
@@ -200,6 +219,7 @@ const installAnchor = '#install';
 
     <script>
       document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
         btn.addEventListener('click', async () => {
           const code = btn.parentElement?.querySelector<HTMLElement>('[data-copy]');
           if (!code?.textContent) return;
@@ -208,12 +228,28 @@ const installAnchor = '#install';
             const copied = btn.dataset.copied ?? 'Copied!';
             const label = btn.dataset.label ?? 'Copy';
             btn.textContent = copied;
-            setTimeout(() => (btn.textContent = label), 1500);
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => (btn.textContent = label), 1500);
           } catch {
             /* clipboard unavailable */
           }
         });
       });
+
+      const menuBtn = document.getElementById('mobile-menu-btn') as HTMLButtonElement | null;
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+          const nowHidden = mobileMenu.classList.toggle('hidden');
+          menuBtn.setAttribute('aria-expanded', String(!nowHidden));
+        });
+        mobileMenu.querySelectorAll('a').forEach((a) => {
+          a.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            menuBtn.setAttribute('aria-expanded', 'false');
+          });
+        });
+      }
     </script>
   </body>
 </html>

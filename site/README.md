@@ -11,7 +11,7 @@ at `/docs/**` without a migration ("竹" tier).
 
 ## Structure
 
-```
+```text
 site/
 ├── src/
 │   ├── components/Landing.astro   # the whole page, driven by `lang`
