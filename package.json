@@ -1,0 +1,25 @@
+{
+  "name": "wordpress-skills",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo root for wordpress-skills. Hosts the Astro landing page (site/) and its Cloudflare Workers deployment.",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "pnpm --filter wordpress-skills-site run dev",
+    "build": "pnpm --filter wordpress-skills-site run build",
+    "preview": "pnpm --filter wordpress-skills-site run preview",
+    "typecheck": "pnpm --filter wordpress-skills-site run typecheck",
+    "test": "pnpm --filter wordpress-skills-site run test",
+    "deploy": "pnpm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.97.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
+  }
+}
