@@ -9,7 +9,7 @@ export interface Content {
   metaDescription: string;
   langSwitchHref: string;
   langSwitchLabel: string;
-  nav: { why: string; install: string; demo: string; github: string };
+  nav: { why: string; install: string; demo: string };
   hero: {
     eyebrow: string;
     title: string;
@@ -68,7 +68,7 @@ export const content: Record<Lang, Content> = {
       'Agent Skills that make AI coding agents read the official WordPress Developer Handbooks first — so answers come from the docs, not a guess.',
     langSwitchHref: '/ja/',
     langSwitchLabel: '日本語',
-    nav: { why: 'Why', install: 'Install', demo: 'Demo', github: 'GitHub' },
+    nav: { why: 'Why', install: 'Install', demo: 'Demo' },
     hero: {
       eyebrow: 'Agent Skill · agentskills.io standard',
       title: 'Stop your AI from hallucinating WordPress APIs.',
@@ -142,7 +142,7 @@ export const content: Record<Lang, Content> = {
       'AI コーディングエージェントにまず WordPress 公式ハンドブックを読ませる Agent Skills。回答が“うろ覚え”ではなく公式ドキュメント由来になります。',
     langSwitchHref: '/',
     langSwitchLabel: 'English',
-    nav: { why: '特徴', install: '導入', demo: 'デモ', github: 'GitHub' },
+    nav: { why: '特徴', install: '導入', demo: 'デモ' },
     hero: {
       eyebrow: 'Agent Skill · agentskills.io 標準',
       title: 'AI に WordPress の API を“でっち上げ”させない。',

@@ -22,9 +22,10 @@ const installAnchor = '#install';
     <meta property="og:title" content={t.metaTitle} />
     <meta property="og:description" content={t.metaDescription} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content="summary" />
     {Astro.site && <link rel="alternate" hreflang="en" href={new URL('/', Astro.site)} />}
     {Astro.site && <link rel="alternate" hreflang="ja" href={new URL('/ja/', Astro.site)} />}
+    {Astro.site && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
   </head>
   <body class="min-h-screen bg-slate-950 text-slate-200 antialiased selection:bg-violet-500/30">
     <!-- Header -->
