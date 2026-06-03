@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { content, GITHUB_URL, type Lang } from '../i18n/content';
+import { withBase } from '../lib/url';
 
 interface Props {
   lang: Lang;
@@ -9,6 +10,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = content[lang];
 const installAnchor = '#install';
+const homeHref = withBase(lang === 'ja' ? '/ja/' : '/');
+const canonicalPath = lang === 'ja' ? '/ja/' : '/';
 ---
 
 <!doctype html>
@@ -16,29 +19,31 @@ const installAnchor = '#install';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{t.metaTitle}</title>
     <meta name="description" content={t.metaDescription} />
+    {Astro.site && <link rel="canonical" href={new URL(withBase(canonicalPath), Astro.site)} />}
     <meta property="og:title" content={t.metaTitle} />
     <meta property="og:description" content={t.metaDescription} />
     <meta property="og:type" content="website" />
+    {Astro.site && <meta property="og:url" content={new URL(withBase(canonicalPath), Astro.site)} />}
     <meta name="twitter:card" content="summary" />
-    {Astro.site && <link rel="alternate" hreflang="en" href={new URL('/', Astro.site)} />}
-    {Astro.site && <link rel="alternate" hreflang="ja" href={new URL('/ja/', Astro.site)} />}
-    {Astro.site && <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />}
+    {Astro.site && <link rel="alternate" hreflang="en" href={new URL(withBase('/'), Astro.site)} />}
+    {Astro.site && <link rel="alternate" hreflang="ja" href={new URL(withBase('/ja/'), Astro.site)} />}
+    {Astro.site && <link rel="alternate" hreflang="x-default" href={new URL(withBase('/'), Astro.site)} />}
   </head>
   <body class="min-h-screen bg-slate-950 text-slate-200 antialiased selection:bg-violet-500/30">
     <!-- Header -->
     <header class="sticky top-0 z-20 border-b border-white/5 bg-slate-950/80 backdrop-blur">
       <div class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
-        <a href={lang === 'ja' ? '/ja/' : '/'} class="font-semibold tracking-tight text-white">
+        <a href={homeHref} class="font-semibold tracking-tight text-white">
           wordpress-skills
         </a>
         <nav class="flex items-center gap-4 text-sm text-slate-400">
           <a href="#why" class="hidden hover:text-white sm:inline">{t.nav.why}</a>
           <a href={installAnchor} class="hidden hover:text-white sm:inline">{t.nav.install}</a>
           <a href="#demo" class="hidden hover:text-white sm:inline">{t.nav.demo}</a>
-          <a href={t.langSwitchHref} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
+          <a href={withBase(t.langSwitchHref)} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
             {t.langSwitchLabel}
           </a>
           <button
@@ -60,7 +65,7 @@ const installAnchor = '#install';
         <a href="#why" class="py-2 hover:text-white">{t.nav.why}</a>
         <a href={installAnchor} class="py-2 hover:text-white">{t.nav.install}</a>
         <a href="#demo" class="py-2 hover:text-white">{t.nav.demo}</a>
-        <a href={t.langSwitchHref} class="py-2 hover:text-white">{t.langSwitchLabel}</a>
+        <a href={withBase(t.langSwitchHref)} class="py-2 hover:text-white">{t.langSwitchLabel}</a>
       </nav>
     </div>
 

@@ -4,10 +4,22 @@
   // Set to the date the project was set up; bump when you want newer runtime semantics.
   "compatibility_date": "2026-06-02",
   // Static-assets-only Worker: Astro is pre-rendered, so there is no `main` Worker
-  // script. Wrangler serves the pre-built `site/dist` output directly.
+  // script. Wrangler serves the pre-built `site/dist` output directly. The output
+  // is nested under the `base` path (see site/astro.config.mjs), so a request for
+  // `/work/wordpress-skills/...` maps straight onto `site/dist/work/wordpress-skills/...`.
   "assets": {
     "directory": "./site/dist"
   },
+  // Mount this Worker under a path prefix of the parent site (hidetaka.dev, a
+  // Next.js-on-Workers app) WITHOUT touching the parent. Cloudflare matches these
+  // routes at the edge: only `/work/wordpress-skills` and everything beneath it
+  // reach this Worker; every other path keeps flowing to the parent. Routes win
+  // over a Custom Domain on the same hostname, so the parent's domain config is
+  // left as-is. Two patterns are needed: the bare prefix and the wildcard subtree.
+  "routes": [
+    { "pattern": "hidetaka.dev/work/wordpress-skills", "zone_name": "hidetaka.dev" },
+    { "pattern": "hidetaka.dev/work/wordpress-skills/*", "zone_name": "hidetaka.dev" }
+  ],
   "observability": {
     "enabled": true
   }
