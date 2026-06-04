@@ -26,14 +26,10 @@ const base = import.meta.env.BASE_URL;
           var pref = localStorage.getItem('lang-preference');
           var b = base.endsWith('/') ? base.slice(0, -1) : base;
           if (lang === 'en') {
-            if (pref === 'ja' || (!pref && navigator.language.startsWith('ja'))) {
-              if (!pref) localStorage.setItem('lang-preference', 'ja');
+            var isJa = pref === 'ja' || (!pref && navigator.language && navigator.language.startsWith('ja'));
+            if (isJa) {
               window.location.replace(b + '/ja/');
-            } else if (!pref) {
-              localStorage.setItem('lang-preference', 'en');
             }
-          } else {
-            if (!pref) localStorage.setItem('lang-preference', 'ja');
           }
         } catch (_) {}
       })();
