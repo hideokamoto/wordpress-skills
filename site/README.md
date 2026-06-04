@@ -62,7 +62,7 @@ Three pieces make the path mount work, and they must stay in sync:
    nest the output to match. A request for `/work/wordpress-skills/_astro/x.css`
    then maps onto `site/dist/work/wordpress-skills/_astro/x.css`.
 3. **`routes` in `../wrangler.jsonc`** — two patterns, the bare prefix and the
-   wildcard subtree (`…/work/wordpress-skills` and `…/work/wordpress-skills/*`).
+   wildcard subtree (`hidetaka.dev/work/wordpress-skills` and `hidetaka.dev/work/wordpress-skills/*`).
 
 To move the LP to a different path, change `base` + `outDir` + the two route
 patterns together, then rebuild.
@@ -94,15 +94,15 @@ page under the following design contract:
 ### How the card links to the LP
 
 The hidetaka.dev Work page card detects that the microCMS entry's `url` field
-points to `https://hidetaka.dev/…` and links the card **directly to the LP**,
+points to `https://hidetaka.dev/work/wordpress-skills` and links the card **directly to the LP**,
 skipping the Next.js detail page entirely:
 
 ```
 Work page card  →  https://hidetaka.dev/work/wordpress-skills  (this LP)
 ```
 
-For Japanese users, the card links to the same base URL and the LP's own
-language switcher (`/work/wordpress-skills/ja/`) handles localisation.
+For Japanese users, the card links to `https://hidetaka.dev/work/wordpress-skills/ja/`
+so they land directly on the Japanese LP without needing to switch languages manually.
 
 ### Slug conflict rule (important)
 
