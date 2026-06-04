@@ -62,7 +62,7 @@ Three pieces make the path mount work, and they must stay in sync:
    nest the output to match. A request for `/work/wordpress-skills/_astro/x.css`
    then maps onto `site/dist/work/wordpress-skills/_astro/x.css`.
 3. **`routes` in `../wrangler.jsonc`** — two patterns, the bare prefix and the
-   wildcard subtree (`…/work/wordpress-skills` and `…/work/wordpress-skills/*`).
+   wildcard subtree (`hidetaka.dev/work/wordpress-skills` and `hidetaka.dev/work/wordpress-skills/*`).
 
 To move the LP to a different path, change `base` + `outDir` + the two route
 patterns together, then rebuild.
@@ -76,3 +76,47 @@ npx wrangler deploy --dry-run   # checks config + routes, uploads nothing
 
 > **Subdomain instead?** Drop `base`/`outDir`, set `outDir` back to `./dist`, and
 > swap the path `routes` for a Custom Domain (e.g. `skills.hidetaka.dev`).
+
+---
+
+## Integration with hidetaka.dev Work page
+
+`hidetaka.dev/work` lists projects from microCMS. This LP coexists with that
+page under the following design contract:
+
+### Role separation
+
+| Layer | What it does |
+|---|---|
+| **microCMS** (`projects` endpoint) | Stores the card display data: title, `about` summary, tags, `url`, status. Provides the Work-page listing. |
+| **This LP** (`/work/wordpress-skills`) | Full product landing page with marketing copy, install instructions, and screenshots. Served by this Cloudflare Worker. |
+
+### How the card links to the LP
+
+The hidetaka.dev Work page card detects that the microCMS entry's `url` field
+points to `https://hidetaka.dev/work/wordpress-skills` and links the card **directly to the LP**,
+skipping the Next.js detail page entirely:
+
+```
+Work page card  →  https://hidetaka.dev/work/wordpress-skills  (this LP)
+```
+
+For Japanese users, the card links to `https://hidetaka.dev/work/wordpress-skills/ja/`
+so they land directly on the Japanese LP without needing to switch languages manually.
+
+### Slug conflict rule (important)
+
+The hidetaka.dev Next.js app has a dynamic route `/work/[slug]` that generates
+static pages from microCMS content IDs. Cloudflare Workers routes take
+precedence at the edge, so `/work/wordpress-skills` is always served by **this
+Worker** — but to keep the static build clean, follow this rule:
+
+> **Never set the microCMS content ID to `wordpress-skills`.**
+> microCMS auto-generates a random ID (e.g. `abc123xyz`), so this should never
+> be an issue in practice. Do not override it manually.
+
+### microCMS entry spec
+
+See [`docs/microcms/wordpress-skills.md`](https://github.com/hideokamoto/hidetaka.dev.2023/blob/main/docs/microcms/wordpress-skills.md)
+in the hidetaka.dev.2023 repository for the full field-by-field content draft
+(English + Japanese).
