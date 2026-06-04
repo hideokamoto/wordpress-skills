@@ -12,6 +12,7 @@ const t = content[lang];
 const installAnchor = '#install';
 const homeHref = withBase(lang === 'ja' ? '/ja/' : '/');
 const canonicalPath = lang === 'ja' ? '/ja/' : '/';
+const base = import.meta.env.BASE_URL;
 ---
 
 <!doctype html>
@@ -19,6 +20,20 @@ const canonicalPath = lang === 'ja' ? '/ja/' : '/';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline define:vars={{ lang, base }}>
+      (function () {
+        try {
+          var pref = localStorage.getItem('lang-preference');
+          var b = base.endsWith('/') ? base.slice(0, -1) : base;
+          if (lang === 'en') {
+            var isJa = pref === 'ja' || (!pref && navigator.language && navigator.language.startsWith('ja'));
+            if (isJa) {
+              window.location.replace(b + '/ja/');
+            }
+          }
+        } catch (_) {}
+      })();
+    </script>
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{t.metaTitle}</title>
     <meta name="description" content={t.metaDescription} />
@@ -43,7 +58,7 @@ const canonicalPath = lang === 'ja' ? '/ja/' : '/';
           <a href="#why" class="hidden hover:text-white sm:inline">{t.nav.why}</a>
           <a href={installAnchor} class="hidden hover:text-white sm:inline">{t.nav.install}</a>
           <a href="#demo" class="hidden hover:text-white sm:inline">{t.nav.demo}</a>
-          <a href={withBase(t.langSwitchHref)} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
+          <a href={withBase(t.langSwitchHref)} data-lang-switch={lang === 'en' ? 'ja' : 'en'} class="rounded-md border border-white/10 px-2 py-1 hover:text-white">
             {t.langSwitchLabel}
           </a>
           <button
@@ -65,7 +80,7 @@ const canonicalPath = lang === 'ja' ? '/ja/' : '/';
         <a href="#why" class="py-2 hover:text-white">{t.nav.why}</a>
         <a href={installAnchor} class="py-2 hover:text-white">{t.nav.install}</a>
         <a href="#demo" class="py-2 hover:text-white">{t.nav.demo}</a>
-        <a href={withBase(t.langSwitchHref)} class="py-2 hover:text-white">{t.langSwitchLabel}</a>
+        <a href={withBase(t.langSwitchHref)} data-lang-switch={lang === 'en' ? 'ja' : 'en'} class="py-2 hover:text-white">{t.langSwitchLabel}</a>
       </nav>
     </div>
 
@@ -223,6 +238,15 @@ const canonicalPath = lang === 'ja' ? '/ja/' : '/';
     </footer>
 
     <script>
+      document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((link) => {
+        link.addEventListener('click', () => {
+          const target = link.dataset.langSwitch;
+          if (target) {
+            try { localStorage.setItem('lang-preference', target); } catch (_) {}
+          }
+        });
+      });
+
       document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
         let timer: ReturnType<typeof setTimeout> | null = null;
         btn.addEventListener('click', async () => {
